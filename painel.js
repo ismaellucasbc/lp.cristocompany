@@ -260,13 +260,19 @@
         const list = el('div', { class: 'pn-panel' });
         const ctl = itemList(list, f.instagram, {
           empty: 'Nenhum post. Toque em "Adicionar post".',
-          title: (p) => p.url ? p.url.replace(/^https?:\/\/(www\.)?/, '') : 'Link do post',
-          meta: (p) => /instagram\.com\/(p|reel|tv)\//i.test(p.url || '') ? 'Link válido' : 'Cole o link do post',
-          fields: (p, refresh) => [field('Link do post', p.url, (x) => { p.url = x.trim(); refresh(); }, { type: 'url', placeholder: 'https://www.instagram.com/p/...', hint: 'No Instagram, toque nos três pontinhos do post e em "Copiar link". O post precisa ser público.' })]
+          title: (p) => p.legenda || (p.url ? p.url.replace(/^https?:\/\/(www\.)?/, '') : 'Link do post'),
+          meta: (p) => !/instagram\.com\/(p|reel|tv)\//i.test(p.url || '') ? 'Cole o link do post' : (p.imagem ? 'Card no tema do site' : 'Sem foto: aparece o quadro branco do Instagram'),
+          thumb: (p) => p.imagem,
+          fields: (p, refresh) => [
+            field('Link do post', p.url, (x) => { p.url = x.trim(); refresh(); }, { type: 'url', placeholder: 'https://www.instagram.com/p/...', hint: 'No Instagram, toque nos três pontinhos do post e em "Copiar link".' }),
+            imageField('Foto do post', p.imagem, (x) => { p.imagem = x; refresh(); }, () => 'instagram'),
+            el('p', { class: 'pn-hint', text: 'Com a foto, o site monta o card no tema escuro ou claro. Sem foto, aparece o quadro oficial do Instagram, que é sempre branco.' }),
+            field('Legenda curta (opcional)', p.legenda, (x) => { p.legenda = x; refresh(); }, { placeholder: 'Ex.: Go and make disciples.' })
+          ]
         });
         listWrap.replaceChildren(
           el('div', { class: 'pn-head' }, el('p', { class: 'pn-sub', text: 'POSTS DO INSTAGRAM' }),
-            el('button', { type: 'button', class: 'pn-btn pn-btn--primary pn-btn--sm', onclick: () => ctl.add({ id: uid(), url: '' }) }, svg(ICON.plus, 16), 'Adicionar post')),
+            el('button', { type: 'button', class: 'pn-btn pn-btn--primary pn-btn--sm', onclick: () => ctl.add({ id: uid(), url: '', imagem: '', legenda: '' }) }, svg(ICON.plus, 16), 'Adicionar post')),
           list);
       } else {
         const list = el('div', { class: 'pn-panel' });

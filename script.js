@@ -58,6 +58,17 @@ const playIcon = () => {
   return s;
 };
 
+const igIcon = () => {
+  const ns = 'http://www.w3.org/2000/svg';
+  const s = document.createElementNS(ns, 'svg');
+  s.setAttribute('width', '18'); s.setAttribute('height', '18'); s.setAttribute('viewBox', '0 0 24 24');
+  s.setAttribute('fill', 'none'); s.setAttribute('stroke', 'currentColor'); s.setAttribute('stroke-width', '1.6'); s.setAttribute('aria-hidden', 'true');
+  const r = document.createElementNS(ns, 'rect'); r.setAttribute('x', '3'); r.setAttribute('y', '3'); r.setAttribute('width', '18'); r.setAttribute('height', '18'); r.setAttribute('rx', '5');
+  const c = document.createElementNS(ns, 'circle'); c.setAttribute('cx', '12'); c.setAttribute('cy', '12'); c.setAttribute('r', '4');
+  s.append(r, c);
+  return s;
+};
+
 /* ---------- Tema claro / escuro ---------- */
 const themeBtn = $('theme-btn');
 function applyTheme(t, save) {
@@ -202,15 +213,28 @@ function renderFeed(feed, links) {
     cta.href = safeLink(links.instagram) || 'https://www.instagram.com/cristocompanyofc/';
     cta.target = '_blank'; cta.rel = 'noopener';
     prodGrid.hidden = true;
-    const posts = (feed.instagram || []).map((p) => safeUrl(p && p.url)).filter((u) => /instagram\.com\/(p|reel|tv)\//i.test(u));
+    const posts = (feed.instagram || [])
+      .map((p) => ({ url: safeUrl(p && p.url).split('?')[0], img: safeUrl(p && p.imagem), legenda: (p && p.legenda) || '' }))
+      .filter((p) => /instagram\.com\/(p|reel|tv)\//i.test(p.url));
+    const handle = '@' + ((safeLink(links.instagram) || '').match(/instagram\.com\/([^/?#]+)/i) || [, 'cristocompanyofc'])[1];
+    let needsEmbed = false;
     igRow.hidden = posts.length === 0;
-    igRow.replaceChildren(...posts.map((u) => {
-      const clean = u.split('?')[0];
-      return el('div', null,
-        el('blockquote', { class: 'instagram-media', 'data-instgrm-permalink': clean, 'data-instgrm-version': '14' },
-          el('a', { href: clean, target: '_blank', rel: 'noopener', text: 'Ver esta publicação no Instagram' })));
+    igRow.classList.toggle('has-cards', posts.some((p) => p.img));
+    igRow.replaceChildren(...posts.map((p) => {
+      if (p.img) {
+        // Card próprio: segue o tema do site
+        return el('a', { class: 'ig-card', href: p.url, target: '_blank', rel: 'noopener', 'aria-label': 'Ver post no Instagram' + (p.legenda ? ': ' + p.legenda : '') },
+          el('span', { class: 'ig-card__head' }, igIcon(), el('span', { text: handle })),
+          el('span', { class: 'ig-card__media' }, el('img', { src: p.img, alt: p.legenda || 'Post da Cristo Company no Instagram', loading: 'lazy' })),
+          p.legenda ? el('span', { class: 'ig-card__caption', text: p.legenda }) : null,
+          el('span', { class: 'ig-card__cta', text: 'VER NO INSTAGRAM →' }));
+      }
+      needsEmbed = true;
+      return el('div', { class: 'ig-embed' },
+        el('blockquote', { class: 'instagram-media', 'data-instgrm-permalink': p.url, 'data-instgrm-version': '14' },
+          el('a', { href: p.url, target: '_blank', rel: 'noopener', text: 'Ver esta publicação no Instagram' })));
     }));
-    if (posts.length) loadInstagramEmbeds();
+    if (needsEmbed) loadInstagramEmbeds();
   } else {
     $('feed-cta-label').textContent = 'VER COLEÇÃO';
     const loja = safeLink(links.loja);
