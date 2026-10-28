@@ -9,6 +9,7 @@
   let dirty = false;
   let saving = false;
   let storageOk = true;
+  let autoImportDone = false;
 
   /* ---------- utilitários ---------- */
   function el(tag, attrs, ...children) {
@@ -330,6 +331,10 @@
               field('Nome de usuário', f.perfilUsuario, (x) => { f.perfilUsuario = x.replace(/^@/, '').trim(); }, { placeholder: 'cristocompanyofc' })));
         }
         drawProfile();
+        if (storageOk && !autoImportDone && f.instagram.some((p) => validUrl(p.url) && !p.imagem)) {
+          autoImportDone = true;
+          setTimeout(() => allBtn.click(), 300);
+        }
         listWrap.replaceChildren(
           el('div', { class: 'pn-head' }, el('p', { class: 'pn-sub', text: 'POSTS DO INSTAGRAM' }),
             el('div', { class: 'pn-image__btns' }, allBtn,
@@ -390,8 +395,34 @@
     }
     drawSections();
 
+
+    const a = p.aparencia;
+    function selectField(label, value, options, onChange, hint) {
+      const id = 'f-' + uid();
+      const sel = el('select', { id, class: 'pn-select' }, ...options.map(([v, t]) => el('option', { value: v, text: t })));
+      sel.value = value;
+      sel.addEventListener('change', () => { onChange(sel.value); markDirty(); });
+      return el('div', { class: 'pn-field' }, el('label', { class: 'pn-label', for: id, text: label }), sel, hint ? el('p', { class: 'pn-hint', text: hint }) : null);
+    }
+    const colorId = 'f-' + uid();
+    const color = el('input', { id: colorId, type: 'color', class: 'pn-input pn-color' });
+    color.value = /^#[0-9a-f]{6}$/i.test(a.destaque) ? a.destaque : '#E9A3B8';
+    color.addEventListener('input', () => { a.destaque = color.value; markDirty(); });
+    const resetColor = el('button', { type: 'button', class: 'pn-btn pn-btn--sm pn-btn--ghost', text: 'Voltar ao rosa', onclick: () => { a.destaque = '#E9A3B8'; color.value = '#E9A3B8'; markDirty(); } });
+    const lookBox = el('div', { class: 'pn-box' },
+      el('p', { class: 'pn-sub', text: 'APARÊNCIA' }),
+      el('div', { class: 'pn-row pn-row--2' },
+        selectField('Fonte', a.fonte, [['Montserrat', 'Montserrat (atual)'], ['Inter', 'Inter'], ['Poppins', 'Poppins'], ['DM Sans', 'DM Sans'], ['Manrope', 'Manrope']], (v) => { a.fonte = v; }),
+        selectField('Espessura das letras', a.peso, [['leve', 'Leve'], ['media', 'Média'], ['forte', 'Forte']], (v) => { a.peso = v; })),
+      el('div', { class: 'pn-row pn-row--2' },
+        selectField('Tamanho do título do topo', a.tituloTopo, [['p', 'Pequeno'], ['m', 'Médio'], ['g', 'Grande']], (v) => { a.tituloTopo = v; }),
+        selectField('Cantos dos cards', a.cantos, [['reto', 'Retos'], ['suave', 'Suaves'], ['redondo', 'Bem redondos']], (v) => { a.cantos = v; })),
+      el('div', { class: 'pn-field' }, el('label', { class: 'pn-label', for: colorId, text: 'Cor de destaque' }),
+        el('div', { class: 'pn-image__btns' }, color, resetColor),
+        el('p', { class: 'pn-hint', text: 'Usada nos detalhes, como "TRANSFORMA." e os rótulos. No tema claro o site escurece um pouco essa cor para dar leitura.' })));
     panel.replaceChildren(
-      el('div', { class: 'pn-head' }, el('h2', { text: 'Página' }), el('p', { text: 'Textos do topo, links, tema e a ordem das seções.' })),
+      el('div', { class: 'pn-head' }, el('h2', { text: 'Página' }), el('p', { text: 'Aparência, textos do topo, links, tema e a ordem das seções.' })),
+      lookBox,
       el('div', { class: 'pn-box' },
         el('p', { class: 'pn-sub', text: 'TOPO DA PÁGINA' }),
         el('div', { class: 'pn-row pn-row--2' },
@@ -429,6 +460,7 @@
     c = c || {};
     c.pagina = c.pagina || {};
     c.pagina.secoes = Array.isArray(c.pagina.secoes) ? c.pagina.secoes : [];
+    c.pagina.aparencia = Object.assign({ fonte: 'Montserrat', peso: 'media', destaque: '#E9A3B8', tituloTopo: 'm', cantos: 'suave' }, c.pagina.aparencia || {});
     c.links = c.links || {};
     c.devocionais = Array.isArray(c.devocionais) ? c.devocionais : [];
     c.videos = Array.isArray(c.videos) ? c.videos : [];

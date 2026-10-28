@@ -96,3 +96,4 @@
 .pn-savebar__status { font-size: 13px; color: var(--text-3); }
 .pn-savebar__status.is-dirty { color: var(--accent); font-weight: 700; }
 .pn-savebar__status.is-error { color: var(--accent); font-weight: 700; }
+.pn-color { width: 64px; min-height: 44px; padding: 4px; cursor: pointer; }

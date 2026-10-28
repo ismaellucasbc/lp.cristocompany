@@ -58,6 +58,44 @@ const playIcon = () => {
   return s;
 };
 
+/* ---------- Aparência (definida no painel) ---------- */
+const FONTS = {
+  Montserrat: "'Montserrat', system-ui, sans-serif",
+  Inter: "'Inter', system-ui, sans-serif",
+  Poppins: "'Poppins', system-ui, sans-serif",
+  'DM Sans': "'DM Sans', system-ui, sans-serif",
+  Manrope: "'Manrope', system-ui, sans-serif"
+};
+const WEIGHTS = {
+  leve: { display: 600, head: 500, label: 600 },
+  media: { display: 700, head: 600, label: 600 },
+  forte: { display: 900, head: 700, label: 800 }
+};
+const HERO_SIZES = { p: 'clamp(30px, 8.5vw, 44px)', m: 'clamp(36px, 10vw, 54px)', g: 'clamp(40px, 11.5vw, 68px)' };
+const RADII = { reto: '4px', suave: '14px', redondo: '22px' };
+function loadFont(name) {
+  if (!FONTS[name] || name === 'Montserrat' || document.getElementById('font-' + name)) return;
+  const l = document.createElement('link');
+  l.id = 'font-' + name; l.rel = 'stylesheet';
+  l.href = 'https://fonts.googleapis.com/css2?family=' + name.replace(/ /g, '+') + ':wght@400;500;600;700;800;900&display=swap';
+  document.head.append(l);
+}
+function applyAppearance(a) {
+  a = a || {};
+  const st = root.style;
+  const font = FONTS[a.fonte] ? a.fonte : 'Montserrat';
+  loadFont(font);
+  st.setProperty('--font', FONTS[font]);
+  const w = WEIGHTS[a.peso] || WEIGHTS.media;
+  st.setProperty('--w-display', w.display);
+  st.setProperty('--w-head', w.head);
+  st.setProperty('--w-label', w.label);
+  if (/^#[0-9a-f]{6}$/i.test(a.destaque || '')) st.setProperty('--accent-base', a.destaque);
+  st.setProperty('--hero-size', HERO_SIZES[a.tituloTopo] || HERO_SIZES.m);
+  st.setProperty('--radius', RADII[a.cantos] || RADII.suave);
+  try { localStorage.setItem('cc-look', JSON.stringify(a)); } catch (e) {}
+}
+
 /* ---------- Tema claro / escuro ---------- */
 const themeBtn = $('theme-btn');
 function applyTheme(t, save) {
@@ -411,6 +449,7 @@ function render(c) {
   const p = c.pagina || {};
   const links = c.links || {};
   if (!userTheme && (p.temaPadrao === 'claro' || p.temaPadrao === 'escuro')) applyTheme(p.temaPadrao === 'claro' ? 'light' : 'dark', false);
+  applyAppearance(p.aparencia);
   applyHero(p);
   applyLinks(links);
   devList = (c.devocionais || []).filter((d) => d && d.titulo).sort((a, b) => String(b.data || '').localeCompare(String(a.data || '')));

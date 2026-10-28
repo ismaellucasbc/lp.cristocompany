@@ -13,6 +13,14 @@
   <script>
     /* Aplica o tema salvo antes de desenhar a página (evita piscar) */
     try { var t = localStorage.getItem('cc-theme'); if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t); } catch (e) {}
+    try {
+      var a = JSON.parse(localStorage.getItem('cc-look') || 'null'), r = document.documentElement.style;
+      if (a) {
+        var W = { leve: [600, 500, 600], media: [700, 600, 600], forte: [900, 700, 800] }[a.peso];
+        if (W) { r.setProperty('--w-display', W[0]); r.setProperty('--w-head', W[1]); r.setProperty('--w-label', W[2]); }
+        if (/^#[0-9a-f]{6}$/i.test(a.destaque || '')) r.setProperty('--accent-base', a.destaque);
+      }
+    } catch (e) {}
   </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
