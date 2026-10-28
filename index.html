@@ -214,7 +214,23 @@
         </a>
       </div>
       <div class="prod-grid" id="prod-grid" hidden></div>
-      <div class="ig-row" id="ig-row" hidden></div>
+      <div class="ig-carousel" id="ig-carousel" role="region" aria-roledescription="carrossel" aria-label="Posts do Instagram" hidden>
+        <div class="ig-viewport" id="ig-viewport">
+          <div class="ig-track" id="ig-track"></div>
+        </div>
+        <div class="ig-controls">
+          <button type="button" class="ig-ctrl" id="ig-prev" aria-label="Post anterior">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>
+          </button>
+          <button type="button" class="ig-ctrl" id="ig-pause" aria-label="Pausar carrossel">
+            <svg class="i-pause" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>
+            <svg class="i-play" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5l11 6.5-11 6.5z"/></svg>
+          </button>
+          <button type="button" class="ig-ctrl" id="ig-next" aria-label="Próximo post">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+          </button>
+        </div>
+      </div>
     </section>
 
   </main>

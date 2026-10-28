@@ -50,7 +50,12 @@
     MUITO_GRANDE: 'Arquivo grande demais.',
     TIPO_NAO_SUPORTADO: 'Use foto em JPG, PNG ou WEBP.',
     GRAVACAO_FALHOU: 'Não foi possível salvar agora. Tente de novo.',
-    UPLOAD_FALHOU: 'Não foi possível enviar a foto. Tente de novo.'
+    UPLOAD_FALHOU: 'Não foi possível enviar a foto. Tente de novo.',
+    LINK_INVALIDO: 'Esse link não parece de um post do Instagram.',
+    INSTAGRAM_RECUSOU: 'O Instagram não liberou este post agora. Tente de novo em alguns minutos ou envie a foto abaixo.',
+    INSTAGRAM_INDISPONIVEL: 'Não consegui falar com o Instagram. Tente de novo ou envie a foto abaixo.',
+    FOTO_NAO_ENCONTRADA: 'Não achei a foto desse post (ele é público?). Envie a foto abaixo.',
+    FOTO_NAO_BAIXOU: 'Não consegui baixar a foto. Tente de novo ou envie a foto abaixo.'
   };
   const errMsg = (code) => ERR[code] || 'Algo deu errado. Tente de novo.';
 
@@ -188,6 +193,7 @@
     }
     draw();
     return {
+      redraw: draw,
       add(item) { arr.unshift(item); openIds.add(item.id); markDirty(); draw(); container.querySelector('details') && container.querySelector('details').scrollIntoView({ behavior: 'smooth', block: 'center' }); }
     };
   }
@@ -258,22 +264,79 @@
     function drawList() {
       if ((f.modo || 'produtos') === 'instagram') {
         const list = el('div', { class: 'pn-panel' });
+        const validUrl = (u) => /instagram\.com\/(?:[\w.]+\/)?(p|reel|reels|tv)\/[A-Za-z0-9_-]+/i.test(u || '');
+        async function importPost(p) {
+          const r = await api('/api/instagram', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ url: p.url }) }).catch(() => ({ ok: false, body: {} }));
+          if (!r.ok) return { ok: false, msg: errMsg(r.body.error) };
+          p.url = r.body.url || p.url;
+          p.imagem = r.body.imagem;
+          if (r.body.legenda) p.legenda = r.body.legenda;
+          p.video = Boolean(r.body.video);
+          if (!f.perfilFoto && r.body.avatar) f.perfilFoto = r.body.avatar;
+          if (!f.perfilUsuario && r.body.usuario) f.perfilUsuario = r.body.usuario;
+          markDirty();
+          return { ok: true };
+        }
         const ctl = itemList(list, f.instagram, {
-          empty: 'Nenhum post. Toque em "Adicionar post".',
-          title: (p) => p.legenda || (p.url ? p.url.replace(/^https?:\/\/(www\.)?/, '') : 'Link do post'),
-          meta: (p) => !/instagram\.com\/(p|reel|tv)\//i.test(p.url || '') ? 'Cole o link do post' : (p.imagem ? 'Card no tema do site' : 'Sem foto: aparece o quadro branco do Instagram'),
+          empty: 'Nenhum post. Toque em "Adicionar post" e cole o link.',
+          title: (p) => (p.legenda || '').split('\n')[0] || (p.url ? p.url.replace(/^https?:\/\/(www\.)?/, '') : 'Link do post'),
+          meta: (p) => !validUrl(p.url) ? 'Cole o link do post' : (p.imagem ? (p.video ? 'Vídeo · pronto' : 'Foto · pronto') : 'Falta a foto'),
           thumb: (p) => p.imagem,
-          fields: (p, refresh) => [
-            field('Link do post', p.url, (x) => { p.url = x.trim(); refresh(); }, { type: 'url', placeholder: 'https://www.instagram.com/p/...', hint: 'No Instagram, toque nos três pontinhos do post e em "Copiar link".' }),
-            imageField('Foto do post', p.imagem, (x) => { p.imagem = x; refresh(); }, () => 'instagram'),
-            el('p', { class: 'pn-hint', text: 'Com a foto, o site monta o card no tema escuro ou claro. Sem foto, aparece o quadro oficial do Instagram, que é sempre branco.' }),
-            field('Legenda curta (opcional)', p.legenda, (x) => { p.legenda = x; refresh(); }, { placeholder: 'Ex.: Go and make disciples.' })
-          ]
+          fields: (p, refresh) => {
+            const status = el('p', { class: 'pn-hint', 'aria-live': 'polite' });
+            const fetchBtn = el('button', { type: 'button', class: 'pn-btn pn-btn--sm' }, 'Buscar foto e legenda do Instagram');
+            async function run() {
+              if (!validUrl(p.url)) { status.textContent = 'Cole primeiro o link do post.'; return; }
+              fetchBtn.disabled = true; status.textContent = 'Buscando no Instagram...';
+              const r = await importPost(p);
+              fetchBtn.disabled = false;
+              if (r.ok) { status.textContent = 'Pronto! Confira e publique.'; ctl.redraw(); }
+              else status.textContent = r.msg;
+            }
+            fetchBtn.addEventListener('click', run);
+            const linkField = field('Link do post', p.url, (x) => { p.url = x.trim(); refresh(); }, { type: 'url', placeholder: 'https://www.instagram.com/p/...', hint: 'No Instagram: três pontinhos do post → "Copiar link". Ao colar, o painel busca a foto e a legenda sozinho.' });
+            linkField.querySelector('input').addEventListener('change', () => { if (validUrl(p.url) && !p.imagem) run(); });
+            return [
+              linkField,
+              el('div', { class: 'pn-field' }, fetchBtn, status),
+              imageField('Foto do post', p.imagem, (x) => { p.imagem = x; refresh(); }, () => 'instagram'),
+              field('Legenda', p.legenda, (x) => { p.legenda = x; refresh(); }, { type: 'textarea', rows: 3, hint: 'No site aparecem as duas primeiras linhas.' })
+            ];
+          }
         });
+        const allStatus = el('p', { class: 'pn-hint', 'aria-live': 'polite' });
+        const allBtn = el('button', { type: 'button', class: 'pn-btn pn-btn--sm' }, 'Buscar fotos que faltam');
+        allBtn.addEventListener('click', async () => {
+          const pending = f.instagram.filter((p) => validUrl(p.url) && !p.imagem);
+          if (!pending.length) { allStatus.textContent = 'Todos os posts já têm foto.'; return; }
+          allBtn.disabled = true;
+          let ok = 0;
+          for (let i = 0; i < pending.length; i++) {
+            allStatus.textContent = 'Buscando ' + (i + 1) + ' de ' + pending.length + '...';
+            const r = await importPost(pending[i]);
+            if (r.ok) ok++;
+          }
+          allBtn.disabled = false;
+          allStatus.textContent = ok === pending.length ? 'Pronto! ' + ok + ' post(s) atualizados. Agora é só publicar.' : ok + ' de ' + pending.length + ' atualizados. Nos que faltaram, envie a foto manualmente.';
+          ctl.redraw();
+          drawProfile();
+        });
+        const profileBox = el('div', { class: 'pn-box' });
+        function drawProfile() {
+          profileBox.replaceChildren(
+            el('p', { class: 'pn-sub', text: 'PERFIL NOS CARDS' }),
+            el('div', { class: 'pn-row pn-row--2' },
+              imageField('Foto do perfil', f.perfilFoto, (x) => { f.perfilFoto = x; }, () => 'perfil'),
+              field('Nome de usuário', f.perfilUsuario, (x) => { f.perfilUsuario = x.replace(/^@/, '').trim(); }, { placeholder: 'cristocompanyofc' })));
+        }
+        drawProfile();
         listWrap.replaceChildren(
           el('div', { class: 'pn-head' }, el('p', { class: 'pn-sub', text: 'POSTS DO INSTAGRAM' }),
-            el('button', { type: 'button', class: 'pn-btn pn-btn--primary pn-btn--sm', onclick: () => ctl.add({ id: uid(), url: '', imagem: '', legenda: '' }) }, svg(ICON.plus, 16), 'Adicionar post')),
-          list);
+            el('div', { class: 'pn-image__btns' }, allBtn,
+              el('button', { type: 'button', class: 'pn-btn pn-btn--primary pn-btn--sm', onclick: () => ctl.add({ id: uid(), url: '', imagem: '', legenda: '' }) }, svg(ICON.plus, 16), 'Adicionar post')),
+            allStatus),
+          list,
+          profileBox);
       } else {
         const list = el('div', { class: 'pn-panel' });
         const ctl = itemList(list, f.produtos, {

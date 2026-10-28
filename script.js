@@ -58,17 +58,6 @@ const playIcon = () => {
   return s;
 };
 
-const igIcon = () => {
-  const ns = 'http://www.w3.org/2000/svg';
-  const s = document.createElementNS(ns, 'svg');
-  s.setAttribute('width', '18'); s.setAttribute('height', '18'); s.setAttribute('viewBox', '0 0 24 24');
-  s.setAttribute('fill', 'none'); s.setAttribute('stroke', 'currentColor'); s.setAttribute('stroke-width', '1.6'); s.setAttribute('aria-hidden', 'true');
-  const r = document.createElementNS(ns, 'rect'); r.setAttribute('x', '3'); r.setAttribute('y', '3'); r.setAttribute('width', '18'); r.setAttribute('height', '18'); r.setAttribute('rx', '5');
-  const c = document.createElementNS(ns, 'circle'); c.setAttribute('cx', '12'); c.setAttribute('cy', '12'); c.setAttribute('r', '4');
-  s.append(r, c);
-  return s;
-};
-
 /* ---------- Tema claro / escuro ---------- */
 const themeBtn = $('theme-btn');
 function applyTheme(t, save) {
@@ -187,15 +176,142 @@ function renderVideos(videos) {
 }
 
 /* ---------- Feed: produtos ou Instagram ---------- */
-let igScriptLoaded = false;
-function loadInstagramEmbeds() {
-  if (window.instgrm && window.instgrm.Embeds) { window.instgrm.Embeds.process(); return; }
-  if (igScriptLoaded) return;
-  igScriptLoaded = true;
-  const s = document.createElement('script');
-  s.async = true; s.src = 'https://www.instagram.com/embed.js';
-  document.body.append(s);
+const SVGNS = 'http://www.w3.org/2000/svg';
+function icon(paths, size = 22, fill = 'none') {
+  const s = document.createElementNS(SVGNS, 'svg');
+  s.setAttribute('width', size); s.setAttribute('height', size); s.setAttribute('viewBox', '0 0 24 24');
+  s.setAttribute('fill', fill); s.setAttribute('stroke', fill === 'none' ? 'currentColor' : 'none');
+  s.setAttribute('stroke-width', '1.7'); s.setAttribute('stroke-linejoin', 'round'); s.setAttribute('stroke-linecap', 'round'); s.setAttribute('aria-hidden', 'true');
+  paths.forEach((d) => { const p = document.createElementNS(SVGNS, 'path'); p.setAttribute('d', d); s.append(p); });
+  return s;
 }
+const IG = {
+  heart: ['M12 20.5s-7.5-4.6-7.5-10.3A4.2 4.2 0 0 1 12 7.6a4.2 4.2 0 0 1 7.5 2.6c0 5.7-7.5 10.3-7.5 10.3z'],
+  comment: ['M20.5 12a8.5 8.5 0 1 1-3.4-6.8 8.5 8.5 0 0 1 3.4 6.8z', 'M20.5 20.5l-2.7-2.6'],
+  repost: ['M17 3.5l3 3-3 3', 'M4 11V9.5a3 3 0 0 1 3-3h13', 'M7 20.5l-3-3 3-3', 'M20 13v1.5a3 3 0 0 1-3 3H4'],
+  send: ['M21 3.5L10.5 13.6', 'M21 3.5l-6.6 17-3.9-6.9-6.9-3.9z'],
+  save: ['M18.5 20.5L12 15l-6.5 5.5v-16a1 1 0 0 1 1-1h11a1 1 0 0 1 1 1z'],
+  more: ['M5 12h.01M12 12h.01M19 12h.01'],
+  reel: ['M4 4h16v16H4z', 'M4 8.5h16M9 4l2.5 4.5M14.5 4l2.5 4.5', 'M10.5 12v5l4-2.5z']
+};
+
+function igCard(p, handle, avatar) {
+  const head = el('span', { class: 'ig-card__head' },
+    avatar ? el('img', { class: 'ig-card__avatar', src: avatar, alt: '' }) : el('span', { class: 'ig-card__avatar', text: 'C' }),
+    el('span', { class: 'ig-card__user', text: handle }),
+    el('span', { class: 'ig-card__follow', text: 'Seguir' }),
+    el('span', { class: 'ig-card__more' }, icon(IG.more, 20)));
+  const media = el('span', { class: 'ig-card__media' });
+  if (p.img) {
+    media.append(el('img', { src: p.img, alt: p.legenda || 'Post da Cristo Company no Instagram', loading: 'lazy', draggable: 'false' }));
+    if (p.video) media.append(el('span', { class: 'ig-card__play' }, icon(IG.reel, 22)));
+  } else {
+    media.append(el('span', { class: 'ig-card__empty' }, icon(['M4 4h16v16H4z', 'M12 8.5a3.5 3.5 0 1 1 0 7 3.5 3.5 0 0 1 0-7z'], 30), el('span', { text: 'VER NO INSTAGRAM' })));
+  }
+  const actions = el('span', { class: 'ig-card__actions' },
+    icon(IG.heart), icon(IG.comment), icon(IG.repost), icon(IG.send), el('span', { class: 'save' }, icon(IG.save)));
+  const caption = p.legenda ? el('span', { class: 'ig-card__caption' }, el('b', { text: handle }), document.createTextNode(p.legenda)) : null;
+  return el('a', { class: 'ig-card', href: p.url, target: '_blank', rel: 'noopener', draggable: 'false', 'aria-label': 'Ver post de ' + handle + ' no Instagram' + (p.legenda ? ': ' + p.legenda.slice(0, 80) : '') },
+    head, media, actions, caption, el('span', { class: 'ig-card__link', text: 'Ver no Instagram' }));
+}
+
+/* Carrossel em loop infinito: avança sozinho a cada 4 segundos */
+const carousel = (() => {
+  const wrap = $('ig-carousel');
+  const viewport = $('ig-viewport');
+  const track = $('ig-track');
+  const pauseBtn = $('ig-pause');
+  const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const DELAY = 4000;
+  let n = 0, index = 0, timer = null, userPaused = reduceMotion, hover = false, focusIn = false, onScreen = true, busy = false;
+
+  const step = () => {
+    const first = track.children[0];
+    if (!first) return 0;
+    const gap = parseFloat(getComputedStyle(track).columnGap || getComputedStyle(track).gap) || 0;
+    return first.getBoundingClientRect().width + gap;
+  };
+  function place(animate) {
+    track.classList.toggle('no-anim', !animate || reduceMotion);
+    track.style.transform = 'translate3d(' + (-index * step()) + 'px,0,0)';
+  }
+  function go(dir) {
+    if (n < 2 || busy) return;
+    busy = !reduceMotion;
+    index += dir;
+    place(true);
+    if (reduceMotion) normalize(); else setTimeout(() => { if (busy) normalize(); }, 1100);
+  }
+  function normalize() {
+    busy = false;
+    if (index >= 2 * n) { index -= n; place(false); }
+    else if (index < n) { index += n; place(false); }
+  }
+  track.addEventListener('transitionend', (e) => { if (e.target === track) normalize(); });
+
+  const running = () => !userPaused && !hover && !focusIn && onScreen && !document.hidden && n > 1;
+  function schedule() {
+    clearInterval(timer); timer = null;
+    if (running()) timer = setInterval(() => go(1), DELAY);
+  }
+  function setPaused(p) {
+    userPaused = p;
+    pauseBtn.classList.toggle('is-paused', p);
+    pauseBtn.setAttribute('aria-label', p ? 'Continuar carrossel' : 'Pausar carrossel');
+    schedule();
+  }
+  pauseBtn.addEventListener('click', () => setPaused(!userPaused));
+  $('ig-next').addEventListener('click', () => { go(1); schedule(); });
+  $('ig-prev').addEventListener('click', () => { go(-1); schedule(); });
+  wrap.addEventListener('mouseenter', () => { hover = true; schedule(); });
+  wrap.addEventListener('mouseleave', () => { hover = false; schedule(); });
+  wrap.addEventListener('focusin', () => { focusIn = true; schedule(); });
+  wrap.addEventListener('focusout', (e) => { if (!wrap.contains(e.relatedTarget)) { focusIn = false; schedule(); } });
+  document.addEventListener('visibilitychange', schedule);
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver((en) => { onScreen = en[0].isIntersecting; schedule(); }, { threshold: 0.2 }).observe(wrap);
+  }
+  let resizeT;
+  window.addEventListener('resize', () => { clearTimeout(resizeT); resizeT = setTimeout(() => place(false), 120); });
+
+  // Arrastar com o dedo / mouse
+  let startX = 0, dx = 0, dragging = false, moved = false;
+  viewport.addEventListener('pointerdown', (e) => {
+    if (n < 2 || (e.pointerType === 'mouse' && e.button !== 0)) return;
+    dragging = true; moved = false; startX = e.clientX; dx = 0;
+    track.classList.add('no-anim');
+  });
+  window.addEventListener('pointermove', (e) => {
+    if (!dragging) return;
+    dx = e.clientX - startX;
+    if (Math.abs(dx) > 8) moved = true;
+    if (moved) track.style.transform = 'translate3d(' + (-index * step() + dx) + 'px,0,0)';
+  });
+  window.addEventListener('pointerup', () => {
+    if (!dragging) return;
+    dragging = false;
+    if (Math.abs(dx) > 50) go(dx < 0 ? 1 : -1); else place(true);
+    schedule();
+  });
+  viewport.addEventListener('click', (e) => { if (moved) { e.preventDefault(); e.stopPropagation(); moved = false; } }, true);
+
+  return {
+    render(cards) {
+      n = cards.length;
+      wrap.hidden = n === 0;
+      wrap.classList.toggle('is-single', n < 2);
+      if (n < 2) { track.replaceChildren(...cards); index = 0; place(false); schedule(); return; }
+      const clone = (c) => { const k = c.cloneNode(true); k.setAttribute('aria-hidden', 'true'); k.setAttribute('tabindex', '-1'); k.inert = true; return k; };
+      // [cópias] [originais] [cópias] — permite girar sem fim nos dois sentidos
+      track.replaceChildren(...cards.map(clone), ...cards, ...cards.map(clone));
+      index = n;
+      requestAnimationFrame(() => place(false));
+      setPaused(userPaused);
+    },
+    hide() { n = 0; wrap.hidden = true; schedule(); }
+  };
+})();
+
 function renderFeed(feed, links) {
   feed = feed || {};
   const mode = feed.modo === 'instagram' ? 'instagram' : 'produtos';
@@ -206,41 +322,24 @@ function renderFeed(feed, links) {
 
   const cta = $('feed-cta');
   const prodGrid = $('prod-grid');
-  const igRow = $('ig-row');
 
   if (mode === 'instagram') {
+    const igLink = safeLink(links.instagram) || 'https://www.instagram.com/cristocompanyofc/';
     $('feed-cta-label').textContent = 'SEGUIR NO INSTAGRAM';
-    cta.href = safeLink(links.instagram) || 'https://www.instagram.com/cristocompanyofc/';
-    cta.target = '_blank'; cta.rel = 'noopener';
+    cta.href = igLink; cta.target = '_blank'; cta.rel = 'noopener';
     prodGrid.hidden = true;
+    const handle = feed.perfilUsuario || ((igLink.match(/instagram\.com\/([^/?#]+)/i) || [])[1]) || 'cristocompanyofc';
+    const avatar = safeUrl(feed.perfilFoto);
     const posts = (feed.instagram || [])
-      .map((p) => ({ url: safeUrl(p && p.url).split('?')[0], img: safeUrl(p && p.imagem), legenda: (p && p.legenda) || '' }))
+      .map((p) => ({ url: safeUrl(p && p.url).split('?')[0], img: safeUrl(p && p.imagem), legenda: (p && p.legenda) || '', video: Boolean(p && p.video) }))
       .filter((p) => /instagram\.com\/(p|reel|tv)\//i.test(p.url));
-    const handle = '@' + ((safeLink(links.instagram) || '').match(/instagram\.com\/([^/?#]+)/i) || [, 'cristocompanyofc'])[1];
-    let needsEmbed = false;
-    igRow.hidden = posts.length === 0;
-    igRow.classList.toggle('has-cards', posts.some((p) => p.img));
-    igRow.replaceChildren(...posts.map((p) => {
-      if (p.img) {
-        // Card próprio: segue o tema do site
-        return el('a', { class: 'ig-card', href: p.url, target: '_blank', rel: 'noopener', 'aria-label': 'Ver post no Instagram' + (p.legenda ? ': ' + p.legenda : '') },
-          el('span', { class: 'ig-card__head' }, igIcon(), el('span', { text: handle })),
-          el('span', { class: 'ig-card__media' }, el('img', { src: p.img, alt: p.legenda || 'Post da Cristo Company no Instagram', loading: 'lazy' })),
-          p.legenda ? el('span', { class: 'ig-card__caption', text: p.legenda }) : null,
-          el('span', { class: 'ig-card__cta', text: 'VER NO INSTAGRAM →' }));
-      }
-      needsEmbed = true;
-      return el('div', { class: 'ig-embed' },
-        el('blockquote', { class: 'instagram-media', 'data-instgrm-permalink': p.url, 'data-instgrm-version': '14' },
-          el('a', { href: p.url, target: '_blank', rel: 'noopener', text: 'Ver esta publicação no Instagram' })));
-    }));
-    if (needsEmbed) loadInstagramEmbeds();
+    carousel.render(posts.map((p) => igCard(p, handle, avatar)));
   } else {
     $('feed-cta-label').textContent = 'VER COLEÇÃO';
     const loja = safeLink(links.loja);
     cta.href = loja || '#feed';
     if (/^https?:/i.test(loja)) { cta.target = '_blank'; cta.rel = 'noopener'; } else { cta.removeAttribute('target'); }
-    igRow.hidden = true;
+    carousel.hide();
     const prods = (feed.produtos || []).filter((p) => p && p.nome);
     prodGrid.hidden = prods.length === 0;
     prodGrid.replaceChildren(...prods.map((p) => {
