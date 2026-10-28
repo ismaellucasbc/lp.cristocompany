@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cristo Company — Fé que veste. Palavra que transforma.</title>
+  <meta name="description" content="Conteúdo diário para fortalecer sua fé: versículo do dia, devocional, vídeos e pedidos de oração. Cristo Company — Go and make disciples.">
+  <meta name="theme-color" content="#0A0A0A">
+  <meta property="og:title" content="Cristo Company">
+  <meta property="og:description" content="Fé que veste. Palavra que transforma. Versículo do dia, devocional e comunidade.">
+  <meta property="og:type" content="website">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%230A0A0A'/%3E%3Crect x='14.5' y='5' width='3' height='22' fill='%23F2F2F2'/%3E%3Crect x='9' y='10' width='14' height='3' fill='%23F2F2F2'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div id="topo" class="app">
+
+  <!-- ===== TOPO ===== -->
+  <header class="topbar">
+    <div class="topbar__inner">
+      <button type="button" class="icon-btn" id="menu-btn" aria-label="Abrir menu" aria-expanded="false" aria-controls="menu">
+        <svg class="i-open" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M3 7h18M3 12h18M3 17h18"/></svg>
+        <svg class="i-close" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19"/></svg>
+      </button>
+      <!-- [LOGO OFICIAL] substituir por <img> quando o arquivo estiver disponível -->
+      <a href="#topo" class="logo" aria-label="Cristo Company, voltar ao início">
+        <span class="logo__main">CRISTO</span>
+        <span class="logo__sub">COMPANY</span>
+      </a>
+      <a class="icon-btn" href="https://www.instagram.com/cristocompanyofc/" target="_blank" rel="noopener" aria-label="Instagram da Cristo Company">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.8" fill="currentColor"/></svg>
+      </a>
+    </div>
+    <nav id="menu" class="menu" aria-label="Menu" hidden>
+      <a href="#versiculo">Versículo do dia</a>
+      <a href="#devocional">Devocional</a>
+      <a href="#videos">Vídeos</a>
+      <a href="#oracao">Pedido de oração</a>
+      <a href="#comunidade">Comunidade</a>
+      <a href="#colecao" data-link="loja">Coleção</a>
+    </nav>
+  </header>
+
+  <!-- ===== HERO ===== -->
+  <section class="hero" aria-label="Apresentação">
+    <!-- Ilustração provisória. Para usar foto: troque o <svg> por <img src="img/hero.jpg" alt="..."> -->
+    <div class="hero__art" aria-hidden="true">
+      <svg width="100%" height="100%" viewBox="0 0 480 360" preserveAspectRatio="xMidYMax slice">
+        <defs>
+          <radialGradient id="cc-glow" cx="62%" cy="76%" r="52%">
+            <stop offset="0" stop-color="#F7D0DC" stop-opacity="0.95"/>
+            <stop offset="0.18" stop-color="#E594AE" stop-opacity="0.55"/>
+            <stop offset="0.5" stop-color="#5E2638" stop-opacity="0.22"/>
+            <stop offset="1" stop-color="#0A0A0A" stop-opacity="0"/>
+          </radialGradient>
+          <linearGradient id="cc-fade" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0" stop-color="#0A0A0A" stop-opacity="1"/>
+            <stop offset="0.35" stop-color="#0A0A0A" stop-opacity="0"/>
+          </linearGradient>
+        </defs>
+        <rect width="480" height="360" fill="url(#cc-glow)"/>
+        <path d="M0 360 V304 Q 110 286 210 274 Q 296 264 356 274 Q 428 286 480 300 V360 Z" fill="#050505"/>
+        <rect x="294" y="92" width="11" height="186" fill="#050505"/>
+        <rect x="259" y="134" width="81" height="11" fill="#050505"/>
+        <rect width="480" height="360" fill="url(#cc-fade)"/>
+      </svg>
+    </div>
+    <div class="hero__content container">
+      <h1 class="hero__title">FÉ QUE VESTE.<br>PALAVRA QUE<br><span class="accent">TRANSFORMA.</span></h1>
+      <p class="hero__text">Conteúdo diário para fortalecer sua fé e te lembrar de quem caminha com você todos os dias.</p>
+      <span class="rule" aria-hidden="true"></span>
+    </div>
+  </section>
+
+  <main class="container feed">
+
+    <div class="feed-grid">
+
+      <!-- ===== VERSÍCULO DO DIA ===== -->
+      <article id="versiculo" class="card reveal" aria-labelledby="t-versiculo">
+        <svg class="card__icon" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><path d="M3 5.5c2.5-1 5.5-1 9 1 3.5-2 6.5-2 9-1v13c-2.5-1-5.5-1-9 1-3.5-2-6.5-2-9-1z"/><path d="M12 6.5v13"/></svg>
+        <div class="card__body" aria-live="polite">
+          <div class="card__head">
+            <h2 id="t-versiculo" class="eyebrow">VERSÍCULO DO DIA</h2>
+            <span class="meta" id="verse-date"></span>
+          </div>
+          <p class="verse__text" id="verse-text">O Senhor é o meu pastor; nada me faltará.</p>
+          <span class="rule rule--sm" aria-hidden="true"></span>
+          <div class="verse__foot">
+            <p class="meta meta--strong"><span id="verse-ref">SALMOS 23:1</span> · ALMEIDA</p>
+            <div class="verse__actions">
+              <a class="icon-btn icon-btn--soft" id="verse-share" href="https://wa.me/" target="_blank" rel="noopener" aria-label="Enviar versículo no WhatsApp">
+                <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M4 20l1.4-4.2A8 8 0 1 1 8.4 18.7z"/></svg>
+              </a>
+              <button type="button" class="icon-btn icon-btn--soft" id="verse-copy" aria-label="Copiar versículo">
+                <svg class="i-copy" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"/></svg>
+                <svg class="i-check" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
+              </button>
+              <button type="button" class="icon-btn icon-btn--soft" id="verse-next" aria-label="Ver outro versículo">
+                <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.3-5.7M20 4v5h-5"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- ===== DEVOCIONAL ===== -->
+      <article id="devocional" class="card reveal" aria-labelledby="t-devocional">
+        <svg class="card__icon" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><path d="M7 17a5 5 0 0 1 10 0"/><path d="M3 17h18M6 21h12M12 5v3M5.2 9.6l1.9 1.3M18.8 9.6l-1.9 1.3M2.5 14h2M19.5 14h2"/></svg>
+        <div class="card__body">
+          <p class="eyebrow">DEVOCIONAL</p>
+          <h2 id="t-devocional" class="card__title">Ele cuida de cada detalhe</h2>
+          <p class="card__text">Deus não é apenas o Deus das grandes coisas, mas também das pequenas. Ele vê o que ninguém vê e cuida do que ninguém cuida. Descanse no cuidado d’Ele e confie: você não está sozinho.</p>
+          <div id="dev-more" class="dev-more" hidden>
+            <p class="card__text muted">[CONTINUAÇÃO DO DEVOCIONAL — TEXTO COMPLETO DA MARCA]</p>
+            <div class="reflect">
+              <p class="meta meta--strong">PARA REFLETIR</p>
+              <p class="reflect__q">Que detalhe da sua vida você ainda não entregou nas mãos de Deus?</p>
+            </div>
+          </div>
+          <button type="button" class="text-btn" id="dev-toggle" aria-expanded="false" aria-controls="dev-more">
+            <span>LER COMPLETO</span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </button>
+        </div>
+      </article>
+
+    </div>
+
+    <!-- ===== VÍDEOS ===== -->
+    <section id="videos" class="videos reveal" aria-labelledby="t-videos">
+      <div class="section-head">
+        <svg class="card__icon" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M10 8.5l5 3.5-5 3.5z"/></svg>
+        <div>
+          <p class="eyebrow">PARA ASSISTIR</p>
+          <h2 id="t-videos" class="card__title">Palavras para o seu momento</h2>
+        </div>
+      </div>
+      <div class="vid-row">
+        <!-- Troque href pelo link de cada vídeo e o .vid__thumb por <img> com a capa -->
+        <a class="vid" href="https://www.instagram.com/cristocompanyofc/reels/" target="_blank" rel="noopener" aria-label="Assistir: Quando a vida estiver difícil">
+          <div class="vid__thumb"><span class="vid__play"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5l11 6.5-11 6.5z"/></svg></span><span class="ph">[THUMB DO VÍDEO]</span></div>
+          <span class="vid__title">Quando a vida estiver difícil</span>
+          <span class="vid__cta">ASSISTIR</span>
+        </a>
+        <a class="vid" href="https://www.instagram.com/cristocompanyofc/reels/" target="_blank" rel="noopener" aria-label="Assistir: Como vencer a ansiedade">
+          <div class="vid__thumb"><span class="vid__play"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5l11 6.5-11 6.5z"/></svg></span><span class="ph">[THUMB DO VÍDEO]</span></div>
+          <span class="vid__title">Como vencer a ansiedade</span>
+          <span class="vid__cta">ASSISTIR</span>
+        </a>
+        <a class="vid" href="https://www.instagram.com/cristocompanyofc/reels/" target="_blank" rel="noopener" aria-label="Assistir: Encontre forças para continuar">
+          <div class="vid__thumb"><span class="vid__play"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5l11 6.5-11 6.5z"/></svg></span><span class="ph">[THUMB DO VÍDEO]</span></div>
+          <span class="vid__title">Encontre forças para continuar</span>
+          <span class="vid__cta">ASSISTIR</span>
+        </a>
+      </div>
+    </section>
+
+    <!-- ===== PEDIDO DE ORAÇÃO ===== -->
+    <a id="oracao" class="card card--link reveal" data-link="oracao" href="https://ig.me/m/cristocompanyofc" target="_blank" rel="noopener">
+      <svg class="card__icon" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg>
+      <span class="card__body">
+        <span class="card__label">VAMOS ORAR?</span>
+        <span class="card__text">Deixe aqui seu pedido de oração</span>
+      </span>
+      <svg class="chev" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+    </a>
+
+    <!-- ===== COMUNIDADE ===== -->
+    <section id="comunidade" class="community" aria-labelledby="t-comunidade">
+      <p class="eyebrow">COMUNIDADE</p>
+      <h2 id="t-comunidade" class="display reveal">UMA FÉ QUE<br>CAMINHA JUNTO.</h2>
+      <p class="lead">Gente vivendo a mesma mensagem nas ruas, nas conversas e no dia a dia.</p>
+      <div class="join-grid">
+        <a class="card card--link" data-link="comunidade" href="https://www.instagram.com/cristocompanyofc/" target="_blank" rel="noopener">
+          <span class="card__body"><span class="card__label-lg">Entre no grupo</span><span class="card__text">Receba a Palavra todos os dias</span></span>
+          <svg class="chev" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+        </a>
+        <a class="card card--link" href="https://www.instagram.com/cristocompanyofc/" target="_blank" rel="noopener">
+          <span class="card__body"><span class="card__label-lg">Siga @cristocompanyofc</span><span class="card__text">Acompanhe a mensagem no Instagram</span></span>
+          <svg class="chev" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+        </a>
+        <a class="card card--link" href="https://www.instagram.com/cristocompanyofc/" target="_blank" rel="noopener">
+          <span class="card__body"><span class="card__label-lg">Mostre sua caminhada</span><span class="card__text">Poste sua foto e marque a gente</span></span>
+          <svg class="chev" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+        </a>
+      </div>
+    </section>
+
+    <!-- ===== MISSÃO ===== -->
+    <section id="missao" class="mission" aria-labelledby="t-missao">
+      <h2 id="t-missao" class="mission__title reveal">GO AND MAKE<br><span class="accent">DISCIPLES.</span></h2>
+      <p class="meta meta--strong">MATEUS 28:19</p>
+      <p class="lead">A fé não precisa ficar entre quatro paredes. Ela está nas ruas, nas conversas e na maneira como vivemos todos os dias.</p>
+    </section>
+
+    <!-- ===== COLEÇÃO ===== -->
+    <section id="colecao" class="collection" aria-labelledby="t-colecao">
+      <div>
+        <h2 id="t-colecao" class="collection__title">VISTA A MENSAGEM.</h2>
+        <p class="collection__text">Peças que levam a Palavra para onde você for.</p>
+      </div>
+      <a class="pill-btn" data-link="loja" href="#colecao">VER COLEÇÃO
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </a>
+    </section>
+
+  </main>
+
+  <!-- ===== RODAPÉ ===== -->
+  <footer class="footer">
+    <div class="container footer__inner">
+      <div class="footer__top">
+        <div class="footer__brand">
+          <span class="logo__main">CRISTO</span>
+          <span class="logo__sub">COMPANY</span>
+          <span class="meta meta--strong footer__slogan">GO AND MAKE DISCIPLES.</span>
+        </div>
+        <div class="footer__cols">
+          <div class="footer__col">
+            <a href="https://www.instagram.com/cristocompanyofc/" target="_blank" rel="noopener">Instagram</a>
+            <a data-link="loja" href="#colecao">Loja</a>
+            <span class="muted">[CONTATO OFICIAL]</span>
+          </div>
+          <div class="footer__col">
+            <span class="muted">[POLÍTICA DE TROCA]</span>
+            <span class="muted">[POLÍTICA DE PRIVACIDADE]</span>
+            <span class="muted">[CNPJ / RAZÃO SOCIAL]</span>
+          </div>
+        </div>
+      </div>
+      <p class="footer__copy">CRISTO COMPANY © <span id="year">2026</span> · TODOS OS DIREITOS RESERVADOS</p>
+    </div>
+  </footer>
+
+  <!-- ===== BARRA INFERIOR (celular) ===== -->
+  <nav class="tabbar" aria-label="Atalhos">
+    <a href="#devocional" class="tab is-active" aria-current="true">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M3 5.5c2.5-1 5.5-1 9 1 3.5-2 6.5-2 9-1v13c-2.5-1-5.5-1-9 1-3.5-2-6.5-2-9-1z"/><path d="M12 6.5v13"/></svg>
+      <span>DEVOCIONAL</span>
+    </a>
+    <a href="#videos" class="tab">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M10 9.5l5 2.5-5 2.5z"/></svg>
+      <span>VÍDEOS</span>
+    </a>
+    <a href="#oracao" class="tab">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg>
+      <span>ORAÇÕES</span>
+    </a>
+  </nav>
+
+</div>
+<script src="script.js"></script>
+</body>
+</html>
