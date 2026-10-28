@@ -41,7 +41,8 @@
 .pn-top__brand { display: flex; align-items: baseline; gap: 10px; }
 .pn-top__brand .logo__main { font-size: 18px; }
 .pn-top__tag { font-size: 10px; font-weight: 800; letter-spacing: 0.2em; color: var(--accent); }
-.pn-top__actions { display: flex; gap: 4px; }
+.pn-top__actions { display: flex; gap: 4px; flex-wrap: wrap; justify-content: flex-end; }
+.pn-top__actions .pn-btn { padding: 0 12px; }
 .pn-tabs { max-width: 880px; margin: 0 auto; padding: 0 12px; display: flex; gap: 4px; overflow-x: auto; scrollbar-width: none; }
 .pn-tabs::-webkit-scrollbar { display: none; }
 .pn-tab { flex: none; min-height: 44px; padding: 0 14px; background: transparent; border: 0; border-bottom: 2px solid transparent; color: var(--muted); font: 700 13px/1 var(--font); cursor: pointer; }

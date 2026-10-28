@@ -203,6 +203,26 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outlin
 .footer__col { display: flex; flex-direction: column; gap: 10px; }
 .footer__col a { text-decoration: none; color: var(--soft); transition: color .2s ease; }
 .footer__col a:hover { color: var(--accent); }
+.footer__bottom { position: relative; display: flex; align-items: center; justify-content: center; }
+.admin-btn { position: absolute; right: -12px; top: 50%; transform: translateY(-50%); width: 44px; height: 44px; display: inline-flex; align-items: center; justify-content: center; background: transparent; border: 0; padding: 0; color: var(--muted); opacity: .35; cursor: pointer; transition: opacity .2s ease, color .2s ease; }
+.admin-btn:hover, .admin-btn:focus-visible { opacity: 1; color: var(--accent); }
+
+/* Janela de acesso do administrador */
+.admin-dialog { width: min(92vw, 360px); padding: 0; border: 1px solid var(--line); border-radius: var(--radius); background: var(--card); color: var(--text); }
+.admin-dialog::backdrop { background: rgba(0,0,0,0.6); -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px); }
+.admin-form { display: flex; flex-direction: column; gap: 10px; padding: 28px 22px 22px; }
+.admin-form__title { font-size: 22px; font-weight: 900; margin-bottom: 6px; }
+.admin-form__label { font-size: 11px; font-weight: 700; letter-spacing: 0.12em; color: var(--text-3); }
+.admin-form__input { width: 100%; min-height: 50px; padding: 10px 14px; border-radius: 10px; border: 1px solid var(--line); background: var(--bg); color: var(--text); font: 700 22px/1 var(--font); letter-spacing: 0.4em; text-align: center; }
+.admin-form__input:focus { outline: none; border-color: var(--accent); }
+.admin-form__msg { min-height: 18px; font-size: 13px; color: var(--accent); }
+.admin-form__actions { display: flex; gap: 8px; }
+.admin-form__btn { flex: 1; min-height: 46px; border-radius: 999px; border: 1px solid var(--line); background: transparent; color: var(--text); font: 700 13px/1 var(--font); cursor: pointer; }
+.admin-form__btn--primary { background: var(--text); color: var(--bg); border-color: var(--text); }
+.admin-form__btn--primary:hover:not(:disabled) { background: var(--accent); border-color: var(--accent); color: #0A0A0A; }
+.admin-form__btn:disabled { opacity: .5; cursor: wait; }
+
+.footer__bottom .footer__copy { padding: 0 40px; }
 .footer__copy { text-align: center; font-size: 10px; font-weight: 600; letter-spacing: 0.14em; color: var(--muted); user-select: none; -webkit-user-select: none; -webkit-tap-highlight-color: transparent; }
 
 /* ---------- Barra inferior (celular) ---------- */

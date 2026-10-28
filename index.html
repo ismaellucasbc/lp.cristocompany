@@ -241,9 +241,29 @@
           </div>
         </div>
       </div>
-      <p class="footer__copy" id="footer-copy">CRISTO COMPANY © <span id="year">2026</span> · TODOS OS DIREITOS RESERVADOS</p>
+      <div class="footer__bottom">
+        <p class="footer__copy" id="footer-copy">CRISTO COMPANY © <span id="year">2026</span> · TODOS OS DIREITOS RESERVADOS</p>
+        <button type="button" class="admin-btn" id="admin-btn" aria-label="Acesso restrito">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+        </button>
+      </div>
     </div>
   </footer>
+
+  <!-- ===== ACESSO DO ADMINISTRADOR ===== -->
+  <dialog class="admin-dialog" id="admin-dialog" aria-labelledby="admin-title">
+    <form method="dialog" class="admin-form" id="admin-form">
+      <p class="eyebrow">ACESSO RESTRITO</p>
+      <h2 class="admin-form__title" id="admin-title">Painel</h2>
+      <label class="admin-form__label" for="admin-pin">PIN</label>
+      <input class="admin-form__input" id="admin-pin" type="password" inputmode="numeric" autocomplete="current-password" required>
+      <p class="admin-form__msg" id="admin-msg" role="alert"></p>
+      <div class="admin-form__actions">
+        <button type="button" class="admin-form__btn" id="admin-cancel">Cancelar</button>
+        <button type="submit" class="admin-form__btn admin-form__btn--primary" id="admin-enter" value="enter">Entrar</button>
+      </div>
+    </form>
+  </dialog>
 
   <!-- ===== BARRA INFERIOR (celular) ===== -->
   <nav class="tabbar" aria-label="Atalhos">

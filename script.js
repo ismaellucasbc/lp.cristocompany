@@ -318,13 +318,40 @@ if ('IntersectionObserver' in window) {
   document.querySelectorAll('.reveal').forEach((n) => n.classList.add('is-visible'));
 }
 
-/* ---------- Acesso discreto ao painel: toque 5 vezes no rodapé "© ..." ---------- */
-let taps = 0; let tapTimer;
-$('footer-copy').addEventListener('click', () => {
-  taps += 1;
-  clearTimeout(tapTimer);
-  tapTimer = setTimeout(() => { taps = 0; }, 2500);
-  if (taps >= 5) { taps = 0; location.href = '/painel'; }
+/* ---------- Acesso do administrador: cadeado discreto no rodapé ---------- */
+const adminDialog = $('admin-dialog');
+const adminPin = $('admin-pin');
+const adminMsg = $('admin-msg');
+const adminEnter = $('admin-enter');
+function openAdmin() {
+  // já entrou nesta aba? vai direto para o painel
+  try { if (sessionStorage.getItem('cc-pin')) { location.href = '/painel'; return; } } catch (e) {}
+  adminMsg.textContent = '';
+  adminPin.value = '';
+  if (typeof adminDialog.showModal === 'function') adminDialog.showModal(); else location.href = '/painel';
+  adminPin.focus();
+}
+$('admin-btn').addEventListener('click', openAdmin);
+$('admin-cancel').addEventListener('click', () => adminDialog.close());
+$('admin-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const pin = adminPin.value.trim();
+  if (!pin) return;
+  adminEnter.disabled = true; adminEnter.textContent = 'Entrando...'; adminMsg.textContent = '';
+  try {
+    const r = await fetch('/api/auth', { method: 'POST', headers: { 'x-admin-pin': pin } });
+    if (r.ok) {
+      try { sessionStorage.setItem('cc-pin', pin); } catch (err) {}
+      location.href = '/painel';
+      return;
+    }
+    const body = await r.json().catch(() => ({}));
+    adminMsg.textContent = body.error === 'PIN_NAO_CONFIGURADO' ? 'O PIN ainda não foi configurado.' : 'PIN incorreto.';
+    adminPin.select();
+  } catch (err) {
+    adminMsg.textContent = 'Sem conexão. Tente de novo.';
+  }
+  adminEnter.disabled = false; adminEnter.textContent = 'Entrar';
 });
 
 $('year').textContent = now.getFullYear();
