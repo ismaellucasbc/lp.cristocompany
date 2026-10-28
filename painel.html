@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="pt-BR" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Painel · Cristo Company</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%230A0A0A'/%3E%3Crect x='14.5' y='5' width='3' height='22' fill='%23F2F2F2'/%3E%3Crect x='9' y='10' width='14' height='3' fill='%23F2F2F2'/%3E%3C/svg%3E">
+  <script>
+    try { var t = localStorage.getItem('cc-theme'); if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t); } catch (e) {}
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="painel.css">
+</head>
+<body class="pn">
+
+  <!-- ===== LOGIN ===== -->
+  <main id="login" class="pn-login">
+    <form id="login-form" class="pn-login__card" autocomplete="off">
+      <div class="logo pn-logo">
+        <span class="logo__main">CRISTO</span>
+        <span class="logo__sub">COMPANY</span>
+      </div>
+      <h1 class="pn-login__title">Painel</h1>
+      <label class="pn-label" for="pin">PIN de acesso</label>
+      <input id="pin" class="pn-input pn-input--pin" type="password" inputmode="numeric" autocomplete="current-password" required>
+      <button type="submit" class="pn-btn pn-btn--primary" id="login-btn">Entrar</button>
+      <p id="login-msg" class="pn-msg" role="alert"></p>
+      <a href="/" class="pn-link">Voltar para o site</a>
+    </form>
+  </main>
+
+  <!-- ===== PAINEL ===== -->
+  <div id="app" class="pn-app" hidden>
+    <header class="pn-top">
+      <div class="pn-top__inner">
+        <div class="pn-top__brand">
+          <span class="logo__main">CRISTO</span>
+          <span class="pn-top__tag">PAINEL</span>
+        </div>
+        <div class="pn-top__actions">
+          <a class="pn-btn pn-btn--ghost" href="/" target="_blank" rel="noopener">Ver site</a>
+          <button type="button" class="pn-btn pn-btn--ghost" id="logout">Sair</button>
+        </div>
+      </div>
+      <nav class="pn-tabs" aria-label="Seções do painel">
+        <button type="button" class="pn-tab" data-tab="devocionais" aria-pressed="true">Devocionais</button>
+        <button type="button" class="pn-tab" data-tab="videos" aria-pressed="false">Vídeos</button>
+        <button type="button" class="pn-tab" data-tab="feed" aria-pressed="false">Feed</button>
+        <button type="button" class="pn-tab" data-tab="pagina" aria-pressed="false">Página</button>
+      </nav>
+    </header>
+
+    <main class="pn-main">
+      <p id="notice" class="pn-notice" hidden></p>
+      <section id="tab-devocionais" class="pn-panel"></section>
+      <section id="tab-videos" class="pn-panel" hidden></section>
+      <section id="tab-feed" class="pn-panel" hidden></section>
+      <section id="tab-pagina" class="pn-panel" hidden></section>
+    </main>
+
+    <footer class="pn-savebar">
+      <div class="pn-savebar__inner">
+        <p id="save-status" class="pn-savebar__status" aria-live="polite">Tudo publicado</p>
+        <button type="button" class="pn-btn pn-btn--primary" id="save-btn" disabled>Salvar e publicar</button>
+      </div>
+    </footer>
+  </div>
+
+  <script src="painel.js"></script>
+</body>
+</html>
