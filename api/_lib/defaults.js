@@ -10,6 +10,7 @@ export default {
     heroDestaque: 'TRANSFORMA.',
     heroTexto: 'Conteúdo diário para fortalecer sua fé e te lembrar de quem caminha com você todos os dias.',
     heroImagem: '',
+    aparencia: { fonte: 'Montserrat', peso: 'media', destaque: '#E9A3B8', tituloTopo: 'm', cantos: 'suave' },
     secoes: [
       { id: 'destaques', nome: 'Versículo do dia e devocional', visivel: true },
       { id: 'videos', nome: 'Vídeos', visivel: true },
