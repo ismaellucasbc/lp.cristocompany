@@ -192,7 +192,7 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outlin
 
 /* ---------- Carrossel de posts do Instagram (segue o tema) ---------- */
 .ig-carousel { display: flex; flex-direction: column; gap: 14px; --ig-gap: 12px; --ig-per: 1.18; }
-.ig-viewport { overflow: hidden; margin-right: -20px; padding-right: 20px; touch-action: pan-y; }
+.ig-viewport { transition: opacity .35s ease; overflow: hidden; margin-right: -20px; padding-right: 20px; touch-action: pan-y; }
 .ig-track { display: flex; gap: var(--ig-gap); will-change: transform; transition: transform .9s cubic-bezier(.22,.61,.36,1); }
 .ig-track.no-anim { transition: none; }
 .ig-track > * { flex: 0 0 calc((100% - (var(--ig-per) - 1) * var(--ig-gap)) / var(--ig-per)); min-width: 0; }
@@ -284,5 +284,5 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outlin
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   .js .reveal { opacity: 1; transform: none; transition: none; }
-  * { transition: none !important; }
+  *:not(.ig-viewport) { transition: none !important; }
 }

@@ -223,7 +223,7 @@ const carousel = (() => {
   const pauseBtn = $('ig-pause');
   const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const DELAY = 4000;
-  let n = 0, index = 0, timer = null, userPaused = reduceMotion, hover = false, focusIn = false, onScreen = true, busy = false;
+  let n = 0, index = 0, timer = null, userPaused = false, hover = false, focusIn = false, onScreen = true, busy = false;
 
   const step = () => {
     const first = track.children[0];
@@ -237,10 +237,16 @@ const carousel = (() => {
   }
   function go(dir) {
     if (n < 2 || busy) return;
-    busy = !reduceMotion;
+    busy = true;
+    if (reduceMotion) {
+      // Quem pediu menos movimento no aparelho vê uma troca suave por esmaecimento, sem deslizar
+      viewport.style.opacity = '0';
+      setTimeout(() => { index += dir; place(false); normalize(); viewport.style.opacity = '1'; }, 350);
+      return;
+    }
     index += dir;
     place(true);
-    if (reduceMotion) normalize(); else setTimeout(() => { if (busy) normalize(); }, 1100);
+    setTimeout(() => { if (busy) normalize(); }, 1100);
   }
   function normalize() {
     busy = false;
